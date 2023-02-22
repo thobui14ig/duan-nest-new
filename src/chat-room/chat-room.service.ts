@@ -7,24 +7,31 @@ import { Model } from 'mongoose';
 
 @Injectable()
 export class ChatRoomService {
-  constructor(@InjectModel(ChatRoom.name) private readonly chatRoomModel: Model<ChatRoomDocument>) {}
+  constructor(
+    @InjectModel(ChatRoom.name)
+    private readonly chatRoomModel: Model<ChatRoomDocument>,
+  ) {}
 
   create(createChatRoomDto: CreateChatRoomDto) {
     console.log(createChatRoomDto);
     return 'This action adds a new chatRoom';
   }
 
-  createRoom(userId: string) {
-    // return this.chatRoomModel.create({
-    //   users: ['123', '333'],
-    //   messages: ['213','321312']
-    // })
-    console.log(userId);
-    const createdCat = new this.chatRoomModel({
-      users: ['63ac5e65d3ea49c7ad9002bd', '63ac5e65d3ea49c7ad900211'],
-      messages: ['63ac5e65d3ea49c7ad9002b3'],
+  async createRoom(userId: string) {
+    const currentUserId = '63a6cae6d4b4cc4dde8f9098';
+
+    const checkExitsRoom = await this.chatRoomModel.findOne({
+      users: { $in: [userId, currentUserId] },
     });
-    return createdCat.save();
+
+    if (!checkExitsRoom) {
+      return this.chatRoomModel.create({
+        users: [userId, currentUserId],
+        messages: [],
+      });
+    }
+
+    return checkExitsRoom;
   }
 
   findAll() {

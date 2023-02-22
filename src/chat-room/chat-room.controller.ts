@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ChatRoomService } from './chat-room.service';
 import { CreateChatRoomDto } from './dto/create-chat-room.dto';
@@ -9,9 +17,9 @@ import { UpdateChatRoomDto } from './dto/update-chat-room.dto';
 export class ChatRoomController {
   constructor(private readonly chatRoomService: ChatRoomService) {}
 
-  @Post('/create-room')
-  createRoom(@Body() params: CreateChatRoomDto) {
-    const { userId } = params
+  @Get('/create-room/:userId')
+  createRoom(@Param() params: CreateChatRoomDto) {
+    const { userId } = params;
     return this.chatRoomService.createRoom(userId);
   }
 
@@ -26,7 +34,10 @@ export class ChatRoomController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateChatRoomDto: UpdateChatRoomDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateChatRoomDto: UpdateChatRoomDto,
+  ) {
     return this.chatRoomService.update(+id, updateChatRoomDto);
   }
 
