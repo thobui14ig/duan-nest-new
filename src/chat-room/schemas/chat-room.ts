@@ -7,10 +7,18 @@ export type ChatRoomDocument = HydratedDocument<ChatRoom>;
 
 @Schema({ autoCreate: true, collection: 'chats' })
 export class ChatRoom {
-  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Messages', default: undefined })
+  @Prop({
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Messages',
+    default: undefined,
+  })
   messages: Messages[];
 
-  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: 'Users', default: undefined })
+  @Prop({
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'Users',
+    default: undefined,
+  })
   users: User[];
 }
 
