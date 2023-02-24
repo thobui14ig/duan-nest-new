@@ -9,14 +9,14 @@ export type ChatRoomDocument = HydratedDocument<ChatRoom>;
 export class ChatRoom {
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'Messages',
+    ref: 'messages',
     default: undefined,
   })
-  messages: Messages[];
+  messages: string[];
 
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],
-    ref: 'Users',
+    ref: 'users',
     default: undefined,
   })
   users: User[];
