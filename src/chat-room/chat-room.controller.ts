@@ -10,6 +10,7 @@ import {
 import { ApiTags } from '@nestjs/swagger';
 import { ChatRoomService } from './chat-room.service';
 import { CreateChatRoomDto } from './dto/create-chat-room.dto';
+import { MessageDto } from './dto/message-chat-room.dto';
 import { UpdateChatRoomDto } from './dto/update-chat-room.dto';
 
 @Controller('chat-room')
@@ -23,9 +24,14 @@ export class ChatRoomController {
     return this.chatRoomService.createRoom(userId);
   }
 
-  @Get()
-  findAll() {
-    return this.chatRoomService.findAll();
+  @Post('/send-message')
+  sendMessage(@Body() body: MessageDto) {
+    return this.chatRoomService.sendMessage(body);
+  }
+
+  @Get('get-messages/:roomId')
+  getMessages(@Param('roomId') roomId: string) {
+    return this.chatRoomService.getMessages(roomId);
   }
 
   @Get(':id')
