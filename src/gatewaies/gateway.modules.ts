@@ -6,9 +6,9 @@ import { AppGateway } from './app.gateway';
 @Module({
   imports: [
     JwtModule.register({
-      secret: "reset",
+      secret: 'reset',
     }),
-    UsersModule
+    UsersModule,
   ],
   providers: [AppGateway],
   controllers: [],

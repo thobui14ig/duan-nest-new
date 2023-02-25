@@ -3,7 +3,12 @@ import { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
-@Schema({ autoCreate: true, collection: 'users' })
+@Schema({
+  autoCreate: true,
+  collection: 'users',
+  timestamps: true,
+  versionKey: false,
+})
 export class User {
   @Prop()
   name: string;

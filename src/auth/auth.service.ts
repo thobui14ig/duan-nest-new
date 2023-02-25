@@ -8,24 +8,28 @@ import { AuthLoginDto } from './dto/login-auth.dto';
 export class AuthService {
   constructor(
     private userService: UsersService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
   ) {}
 
-  async login(dto: AuthLoginDto){
-    const user = await this.userService.findByNamePassword({ name: dto.name, password: dto.password });
+  async login(dto: AuthLoginDto) {
+    const user = await this.userService.findByNamePassword({
+      name: dto.name,
+      password: dto.password,
+    });
 
-    if(user) return {
-      accessToken: this.SinUser(user._id.toString(), user.name),
-      user
-    };
+    if (user)
+      return {
+        accessToken: this.SinUser(user._id.toString(), user.name),
+        user,
+      };
     else return false;
   }
 
-  SinUser(userId: string, name: string){
+  SinUser(userId: string, name: string) {
     return this.jwtService.sign({
-        sub: userId, 
-        name
-    })
+      sub: userId,
+      name,
+      id: userId,
+    });
   }
 }
-

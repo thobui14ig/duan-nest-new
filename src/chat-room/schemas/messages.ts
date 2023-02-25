@@ -3,7 +3,12 @@ import mongoose, { HydratedDocument } from 'mongoose';
 
 export type MessagesDocument = HydratedDocument<Messages>;
 
-@Schema({ autoCreate: true, collection: 'messages' })
+@Schema({
+  autoCreate: true,
+  collection: 'messages',
+  timestamps: true,
+  versionKey: false,
+})
 export class Messages {
   @Prop({ type: String, default: undefined })
   content: string;
