@@ -22,11 +22,9 @@ export class ChatRoomService {
     return 'This action adds a new chatRoom';
   }
 
-  async createRoom(userId: string) {
-    const currentUserId = '63a6cae6d4b4cc4dde8f9098';
-
+  async createRoom(userId: string, currentUserId: string) {
     const checkExitsRoom = await this.chatRoomModel.findOne({
-      users: { $in: [userId, currentUserId] },
+      users: { $all: [userId, currentUserId] },
     });
 
     if (!checkExitsRoom) {
@@ -39,7 +37,7 @@ export class ChatRoomService {
     return checkExitsRoom;
   }
 
-  async sendMessage(message: MessageDto, userId = '63a6cae6d4b4cc4dde8f9098') {
+  async sendMessage(message: MessageDto, userId: string) {
     const { content, receiveId, roomId } = message;
     console.log(11, message);
 

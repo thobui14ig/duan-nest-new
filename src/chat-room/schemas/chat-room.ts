@@ -5,7 +5,12 @@ import { Messages } from './messages';
 
 export type ChatRoomDocument = HydratedDocument<ChatRoom>;
 
-@Schema({ autoCreate: true, collection: 'chats' })
+@Schema({
+  autoCreate: true,
+  collection: 'chats',
+  timestamps: true,
+  versionKey: false,
+})
 export class ChatRoom {
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],

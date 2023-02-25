@@ -1,3 +1,4 @@
+import { AuthGuard } from './../auth/guard/auth.guard';
 import {
   Controller,
   Get,
@@ -6,6 +7,8 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ChatRoomService } from './chat-room.service';
@@ -19,18 +22,20 @@ export class ChatRoomController {
   constructor(private readonly chatRoomService: ChatRoomService) {}
 
   @Get('/create-room/:userId')
-  createRoom(@Param() params: CreateChatRoomDto) {
+  createRoom(@Param() params: CreateChatRoomDto, @Req() req: any) {
+    const { id: currentUserId } = req.user;
     const { userId } = params;
-    return this.chatRoomService.createRoom(userId);
+    return this.chatRoomService.createRoom(userId, currentUserId);
   }
 
   @Post('/send-message')
-  sendMessage(@Body() body: MessageDto) {
-    return this.chatRoomService.sendMessage(body);
+  sendMessage(@Body() body: MessageDto, @Req() req: any) {
+    const { id: currentUserId } = req.user;
+    return this.chatRoomService.sendMessage(body, currentUserId);
   }
 
   @Get('get-messages/:roomId')
-  getMessages(@Param('roomId') roomId: string) {
+  getMessages(@Param('roomId') roomId: string, @Req() req: any) {
     return this.chatRoomService.getMessages(roomId);
   }
 
