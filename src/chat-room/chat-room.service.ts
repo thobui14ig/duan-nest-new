@@ -1,3 +1,4 @@
+import { UsersService } from './../users/users.service';
 import { MessageDto } from './dto/message-chat-room.dto';
 import { ChatRoom, ChatRoomDocument } from './schemas/chat-room';
 import { Injectable } from '@nestjs/common';
@@ -15,6 +16,7 @@ export class ChatRoomService {
     private readonly chatRoomModel: Model<ChatRoomDocument>,
     @InjectModel(Messages.name)
     private readonly messageModel: Model<MessagesDocument>,
+    private userService: UsersService,
   ) {}
 
   create(createChatRoomDto: CreateChatRoomDto) {
@@ -28,10 +30,16 @@ export class ChatRoomService {
     });
 
     if (!checkExitsRoom) {
-      return this.chatRoomModel.create({
+      const data = await this.chatRoomModel.create({
         users: [userId, currentUserId],
         messages: [],
       });
+
+      for (const id of [userId, currentUserId]) {
+        await this.userService.updateListChatRooms(id, data._id.toString());
+      }
+
+      return data;
     }
 
     return checkExitsRoom;
@@ -82,6 +90,11 @@ export class ChatRoomService {
       .exec();
 
     return chatRoom;
+  }
+
+  getListRoom(userId: string) {
+    console.log(222, userId);
+    return this.userService.getListRooms(userId);
   }
 
   findAll() {

@@ -44,7 +44,12 @@ export class ChatRoomController {
     return this.chatRoomService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Get('/list-rooms/:id')
+  getListRoom(@Param('id') userId: string) {
+    console.log(111, userId);
+    return this.chatRoomService.getListRoom(userId);
+  }
+
   update(
     @Param('id') id: string,
     @Body() updateChatRoomDto: UpdateChatRoomDto,

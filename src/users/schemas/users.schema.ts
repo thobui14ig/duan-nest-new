@@ -1,6 +1,6 @@
+import { ChatRoom } from './../../chat-room/schemas/chat-room';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
-
+import mongoose, { HydratedDocument } from 'mongoose';
 export type UserDocument = HydratedDocument<User>;
 
 @Schema({
@@ -15,6 +15,13 @@ export class User {
 
   @Prop()
   password: string;
+
+  @Prop({
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'chats',
+    default: undefined,
+  })
+  listChats: ChatRoom[];
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
