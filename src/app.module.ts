@@ -8,6 +8,7 @@ import { ChatRoomModule } from './chat-room/chat-room.module';
 import { GatewayModules } from './gatewaies/gateway.modules';
 import { UsersModule } from './users/users.module';
 import { JwtModule } from '@nestjs/jwt';
+import { TasksModule } from './tasks/tasks.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { JwtModule } from '@nestjs/jwt';
     AuthModule,
     GatewayModules,
     ChatRoomModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],
