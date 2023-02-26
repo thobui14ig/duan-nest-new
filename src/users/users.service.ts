@@ -3,11 +3,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { Model } from 'mongoose';
-
+import mongoose, { Model } from 'mongoose';
+const ObjectId = mongoose.Types.ObjectId;
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private readonly userModel: Model<UserDocument>) {}
+  constructor(
+    @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+  ) {}
 
   create(createUserDto: CreateUserDto) {
     return createUserDto;
@@ -31,5 +33,38 @@ export class UsersService {
 
   remove(id: number) {
     return `This action removes a #${id} user`;
+  }
+
+  updateListChatRooms(userId: string, roomId: string) {
+    return this.userModel.updateOne(
+      { _id: userId },
+      { $push: { listChats: roomId } },
+    );
+  }
+
+  async getListRooms(userId: string) {
+    const [listChats] = await this.userModel
+      .aggregate([
+        {
+          $lookup: {
+            from: 'chats',
+            localField: 'listChats',
+            foreignField: '_id',
+            as: 'listChats',
+          },
+        },
+        { $match: { _id: new ObjectId(userId) } },
+        {
+          $project: {
+            _id: 1,
+            'listChats.users': 1,
+            'listChats.createdAt': 1,
+            'listChats.updatedAt': 1,
+          },
+        },
+      ])
+      .exec();
+
+    return listChats;
   }
 }
