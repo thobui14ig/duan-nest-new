@@ -8,10 +8,13 @@ import {
   Param,
   Delete,
   Req,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('tasks')
 @ApiTags('tasks')
@@ -20,7 +23,6 @@ export class TasksController {
 
   @Post()
   create(@Body() createTaskDto: CreateTaskDto, @Req() req: any) {
-    console.log(333, createTaskDto);
     const { id } = req.user;
     return this.tasksService.create(createTaskDto, id);
   }
@@ -37,11 +39,21 @@ export class TasksController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
-    return this.tasksService.update(+id, updateTaskDto);
+    return this.tasksService.update(id, updateTaskDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.tasksService.remove(+id);
+    return this.tasksService.remove(id);
+  }
+
+  @Post('/upload-report')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(@UploadedFile() file: Express.Multer.File) {
+    console.log(123123);
+    return {
+      filename: file.filename,
+      originalName: file.originalname,
+    };
   }
 }

@@ -1493,10 +1493,10 @@
   resolved "https://registry.yarnpkg.com/@nestjs/passport/-/passport-9.0.3.tgz#4df0e6de3176e04a5770cb432e58f129c8e49f9e"
   integrity sha512-HplSJaimEAz1IOZEu+pdJHHJhQyBOPAYWXYHfAPQvRqWtw4FJF1VXl1Qtk9dcXQX1eKytDtH+qBzNQc19GWNEg==
 
-"@nestjs/platform-express@9.3.8":
-  version "9.3.8"
-  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-9.3.8.tgz#6f8166b8b3efe99c8a786bb0723ceaf4ce87d584"
-  integrity sha512-VY0tZbMPXyLypIm1FwpFC+xv0DR0RWx+M4baD9JiLmh+jdojm/blfzoFqVMRoZ33F9Q3iUjrQfSJOfgbbTiv5g==
+"@nestjs/platform-express@^9.3.9":
+  version "9.3.9"
+  resolved "https://registry.yarnpkg.com/@nestjs/platform-express/-/platform-express-9.3.9.tgz#557ace8589b54d4ee7bad87a1247a521058395d7"
+  integrity sha512-f8ja2sYuDGj2QSMmjg05n3WF19wJG5yTiYxRi64nsu5GKL0qLM1LzxNemehkni/knExlvF2bDpbKKpna9nC1JA==
   dependencies:
     body-parser "1.20.1"
     cors "2.8.5"
@@ -1753,7 +1753,7 @@
     "@types/qs" "*"
     "@types/range-parser" "*"
 
-"@types/express@^4.17.13":
+"@types/express@*", "@types/express@^4.17.13":
   version "4.17.17"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.17.tgz#01d5437f6ef9cfa8668e616e13c2f2ac9a491ae4"
   integrity sha512-Q4FmmuLGBG58btUnfS1c1r/NQdlp3DMfGDGig8WhfpA2YRUtEkxAjkZb0yvplJGYdF1fsQ81iMDcH24sSCNC/Q==
@@ -1813,6 +1813,13 @@
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@types/mime/-/mime-3.0.1.tgz#5f8f2bca0a5863cb69bc0b0acd88c96cb1d4ae10"
   integrity sha512-Y4XFY5VJAuw0FgAqPNd6NNoV44jbq9Bz2L7Rh/J6jLTiHBSBJa9fxqQIvkIld4GsoDOcCbvzOUAbLPsSKKg+uA==
+
+"@types/multer@^1.4.7":
+  version "1.4.7"
+  resolved "https://registry.yarnpkg.com/@types/multer/-/multer-1.4.7.tgz#89cf03547c28c7bbcc726f029e2a76a7232cc79e"
+  integrity sha512-/SNsDidUFCvqqcWDwxv2feww/yqhNeTRL5CVoL3jU4Goc4kKEL10T7Eye65ZqPNi4HRx8sAEX59pV1aEH7drNA==
+  dependencies:
+    "@types/express" "*"
 
 "@types/node@*", "@types/node@>=10.0.0", "@types/node@^18.0.3":
   version "18.14.0"
