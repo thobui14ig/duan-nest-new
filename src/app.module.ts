@@ -1,14 +1,14 @@
-import { AuthMiddleware } from './libs/middlwares/auth-middlware';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { JwtModule } from '@nestjs/jwt';
+import { MongooseModule } from '@nestjs/mongoose';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MongooseModule } from '@nestjs/mongoose';
 import { AuthModule } from './auth/auth.module';
 import { ChatRoomModule } from './chat-room/chat-room.module';
 import { GatewayModules } from './gatewaies/gateway.modules';
-import { UsersModule } from './users/users.module';
-import { JwtModule } from '@nestjs/jwt';
+import { AuthMiddleware } from './libs/middlwares/auth-middlware';
 import { TasksModule } from './tasks/tasks.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -21,6 +21,7 @@ import { TasksModule } from './tasks/tasks.module';
     JwtModule.register({
       secret: 'reset',
     }),
+
     UsersModule,
     AuthModule,
     GatewayModules,

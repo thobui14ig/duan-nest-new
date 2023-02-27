@@ -29,6 +29,9 @@ export class Tasks {
   })
   assigne: string;
 
+  @Prop({ type: Boolean, default: false })
+  isUpload: boolean;
+
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     required: true,

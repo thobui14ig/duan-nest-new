@@ -1,13 +1,13 @@
 export class CreateTaskDto {
-  title: string;
+  title?: string;
 
-  description: string;
+  description?: string;
 
-  startDay: Date;
+  startDay?: Date;
 
-  endDay: Date;
+  endDay?: Date;
 
-  assigne: string;
+  assigne?: string;
 
-  createdBy: string;
+  createdBy?: string;
 }
