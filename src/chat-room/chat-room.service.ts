@@ -47,7 +47,6 @@ export class ChatRoomService {
 
   async sendMessage(message: MessageDto, userId: string) {
     const { content, receiveId, roomId } = message;
-    console.log(11, message);
 
     const messageReturn = await this.messageModel.create({
       content,
