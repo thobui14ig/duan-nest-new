@@ -46,7 +46,6 @@ export class ChatRoomController {
 
   @Get('/list-rooms/:id')
   getListRoom(@Param('id') userId: string) {
-    console.log(111, userId);
     return this.chatRoomService.getListRoom(userId);
   }
 

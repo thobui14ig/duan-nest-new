@@ -34,6 +34,7 @@ export class AppGateway
     if (user) {
       this.addUser({ id: user._id, socketId: client.id });
     }
+    console.log(111, this.listUser);
   }
 
   @SubscribeMessage('sendMessage')
@@ -41,13 +42,15 @@ export class AppGateway
     client: Socket,
     payload: { senderId: string; text: string; receiveId: string },
   ) {
-    const { senderId, receiveId, text } = payload;
+    const { senderId, receiveId, text: content } = payload;
     const userReceive = this.getUser(receiveId);
     const emit = this.server;
-
-    emit.emit('sendDataServer', {
-      render: true,
-    });
+    if (userReceive) {
+      emit.to(userReceive.socketId).emit('sendDataServer', {
+        senderId,
+        content,
+      });
+    }
   }
 
   handleDisconnect(client: Socket) {
@@ -64,11 +67,8 @@ export class AppGateway
     this.listUser = this.listUser.filter((user) => user.socketId !== socketId);
   }
 
-  getUser(userId: string) {
-    const data = this.listUser.find((user) => {
-      user.id.toString() === userId;
-    });
-    return data;
+  getUser(userId: string): { id: string; socketId: string } {
+    return this.listUser.find((user) => user.id === userId);
   }
 
   async getDataUserFromToken(client: Socket): Promise<any> {
