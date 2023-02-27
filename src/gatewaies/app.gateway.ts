@@ -40,15 +40,21 @@ export class AppGateway
   @SubscribeMessage('sendMessage')
   messages(
     client: Socket,
-    payload: { senderId: string; text: string; receiveId: string },
+    payload: {
+      senderId: string;
+      text: string;
+      receiveId: string;
+      roomId: string;
+    },
   ) {
-    const { senderId, receiveId, text: content } = payload;
+    const { senderId, receiveId, text: content, roomId } = payload;
     const userReceive = this.getUser(receiveId);
     const emit = this.server;
     if (userReceive) {
       emit.to(userReceive.socketId).emit('sendDataServer', {
         senderId,
         content,
+        roomId,
       });
     }
   }
