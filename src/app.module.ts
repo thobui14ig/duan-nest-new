@@ -1,6 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
@@ -20,6 +22,11 @@ import { UsersModule } from './users/users.module';
     ),
     JwtModule.register({
       secret: 'reset',
+    }),
+
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'frontend'),
+      exclude: ['/api*'], // Exclude API routes
     }),
 
     UsersModule,
