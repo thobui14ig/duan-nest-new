@@ -1,3 +1,4 @@
+import { Attachment, AttachmentSchema } from './schemas/attachment';
 import { extname } from 'path';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -9,13 +10,12 @@ import { MulterModule, MulterModuleOptions } from '@nestjs/platform-express';
 
 const multerOptions: MulterModuleOptions = {
   storage: multer.diskStorage({
-    destination: './uploads',
+    destination: './dist/uploads',
     filename: (req, file, cb) => {
       const randomName = Array(32)
         .fill(null)
         .map(() => Math.round(Math.random() * 16).toString(16))
         .join('');
-      console.log(randomName);
 
       return cb(null, `${randomName}${extname(file.originalname)}`);
     },
@@ -24,7 +24,10 @@ const multerOptions: MulterModuleOptions = {
 @Module({
   imports: [
     MulterModule.register(multerOptions),
-    MongooseModule.forFeature([{ name: Tasks.name, schema: TasksSchema }]),
+    MongooseModule.forFeature([
+      { name: Tasks.name, schema: TasksSchema },
+      { name: Attachment.name, schema: AttachmentSchema },
+    ]),
   ],
   controllers: [TasksController],
   providers: [TasksService],

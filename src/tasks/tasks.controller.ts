@@ -10,11 +10,15 @@ import {
   Req,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
+import console from 'console';
+import { createReadStream } from 'fs';
+import { join } from 'path';
 
 @Controller('tasks')
 @ApiTags('tasks')
@@ -28,8 +32,8 @@ export class TasksController {
   }
 
   @Get()
-  findAll() {
-    return this.tasksService.findAll();
+  findAll(@Req() req: any) {
+    return this.tasksService.findAll(req.user);
   }
 
   @Get(':id')
@@ -47,13 +51,23 @@ export class TasksController {
     return this.tasksService.remove(id);
   }
 
-  @Post('/upload-report')
+  @Post('upload-report/:id/:userCreate')
   @UseInterceptors(FileInterceptor('file'))
-  async uploadFile(@UploadedFile() file: Express.Multer.File) {
-    console.log(123123);
-    return {
-      filename: file.filename,
-      originalName: file.originalname,
-    };
+  uploadFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') taskId: string,
+    @Param('userCreate') userCreate: any,
+  ) {
+    return this.tasksService.insertFileReport(taskId, file, userCreate);
+  }
+
+  @Get('get-attachments/:taskId')
+  getAttachment(@Param('taskId') taskId: string) {
+    return this.tasksService.getAttachments(taskId);
+  }
+
+  @Get('/attachment/:fileName')
+  downloadFile(@Param('fileName') fileName: string, @Res() res: any) {
+    return this.tasksService.downloadFile(fileName, res);
   }
 }

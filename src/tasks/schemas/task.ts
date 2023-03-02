@@ -38,6 +38,13 @@ export class Tasks {
     ref: 'Users',
   })
   createdBy: string;
+
+  @Prop({
+    type: [mongoose.Schema.Types.ObjectId],
+    required: true,
+    ref: 'Attachments',
+  })
+  attachments: string;
 }
 
 export const TasksSchema = SchemaFactory.createForClass(Tasks);

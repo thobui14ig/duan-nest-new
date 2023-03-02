@@ -19,17 +19,18 @@ export class AuthService {
 
     if (user)
       return {
-        accessToken: this.SinUser(user._id.toString(), user.name),
+        accessToken: this.SinUser(user._id.toString(), user.name, user.role),
         user,
       };
     else return false;
   }
 
-  SinUser(userId: string, name: string) {
+  SinUser(userId: string, name: string, role: number) {
     return this.jwtService.sign({
       sub: userId,
       name,
       id: userId,
+      role,
     });
   }
 }

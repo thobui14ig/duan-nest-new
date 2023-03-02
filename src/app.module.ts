@@ -29,6 +29,10 @@ import { UsersModule } from './users/users.module';
       exclude: ['/api*'], // Exclude API routes
     }),
 
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+    }),
+
     UsersModule,
     AuthModule,
     GatewayModules,

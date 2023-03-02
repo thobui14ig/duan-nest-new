@@ -92,7 +92,6 @@ export class ChatRoomService {
   }
 
   getListRoom(userId: string) {
-    console.log(222, userId);
     return this.userService.getListRooms(userId);
   }
 

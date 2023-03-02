@@ -11,8 +11,8 @@ export class UsersService {
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
   ) {}
 
-  create(createUserDto: CreateUserDto) {
-    return createUserDto;
+  create(createUserDto: CreateUserDto, userId: string) {
+    return this.userModel.create({ ...createUserDto, createdBy: userId });
   }
 
   findAll() {
@@ -27,12 +27,17 @@ export class UsersService {
     return this.userModel.findOne({ name });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return updateUserDto;
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return this.userModel.updateOne(
+      { _id: id },
+      {
+        $set: updateUserDto,
+      },
+    );
   }
 
   remove(id: number) {
-    return `This action removes a #${id} user`;
+    return this.userModel.deleteOne({ _id: id });
   }
 
   updateListChatRooms(userId: string, roomId: string) {

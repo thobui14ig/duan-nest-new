@@ -16,6 +16,12 @@ export class User {
   @Prop()
   password: string;
 
+  @Prop()
+  email: string;
+
+  @Prop()
+  role: number;
+
   @Prop({
     type: [mongoose.Schema.Types.ObjectId],
     ref: 'chats',
