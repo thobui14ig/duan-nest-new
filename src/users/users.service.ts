@@ -19,6 +19,10 @@ export class UsersService {
     return this.userModel.find();
   }
 
+  findOne(id: string) {
+    return this.userModel.findOne({ _id: new ObjectId(id) });
+  }
+
   findByNamePassword(dto: { name: string; password: string }) {
     return this.userModel.findOne(dto);
   }
@@ -62,7 +66,10 @@ export class UsersService {
         {
           $project: {
             _id: 1,
+            'listChats._id': 1,
             'listChats.users': 1,
+            'listChats.name': 1,
+            'listChats.type': 1,
             'listChats.createdAt': 1,
             'listChats.updatedAt': 1,
           },

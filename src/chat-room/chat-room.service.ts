@@ -1,3 +1,4 @@
+import { CreateChatGroupDto } from './dto/create-group-room';
 import { UsersService } from './../users/users.service';
 import { MessageDto } from './dto/message-chat-room.dto';
 import { ChatRoom, ChatRoomDocument } from './schemas/chat-room';
@@ -27,6 +28,7 @@ export class ChatRoomService {
   async createRoom(userId: string, currentUserId: string) {
     const checkExitsRoom = await this.chatRoomModel.findOne({
       users: { $all: [userId, currentUserId] },
+      type: 'user',
     });
 
     if (!checkExitsRoom) {
@@ -45,18 +47,26 @@ export class ChatRoomService {
     return checkExitsRoom;
   }
 
+  async getRoom(roomId: string) {
+    return this.chatRoomModel.findOne({
+      _id: new ObjectId(roomId),
+    });
+  }
+
   async sendMessage(message: MessageDto, userId: string) {
     const { content, receiveId, roomId } = message;
+    if (message) {
+      const messageReturn = await this.messageModel.create({
+        content,
+        createdBy: userId,
+      });
+      await this.chatRoomModel.updateOne(
+        { _id: new ObjectId(roomId) },
+        { $push: { messages: messageReturn._id } },
+      );
 
-    const messageReturn = await this.messageModel.create({
-      content,
-      createdBy: userId,
-    });
-
-    await this.chatRoomModel.updateOne(
-      { _id: new ObjectId(roomId) },
-      { $push: { messages: messageReturn._id } },
-    );
+      return messageReturn;
+    }
   }
 
   async getMessages(roomId: string): Promise<ChatRoom> {
@@ -109,5 +119,25 @@ export class ChatRoomService {
 
   remove(id: number) {
     return `This action removes a #${id} chatRoom`;
+  }
+
+  async createGroup(body: CreateChatGroupDto) {
+    const data = await this.chatRoomModel.create(body);
+    for (const id of body.users) {
+      await this.userService.updateListChatRooms(id, data._id.toString());
+    }
+  }
+
+  async removeMessage(messageId: string, roomId: string) {
+    await this.messageModel.deleteOne({
+      _id: new ObjectId(messageId),
+    });
+
+    await this.chatRoomModel.findOneAndUpdate(
+      { _id: new ObjectId(roomId) },
+      {
+        $pull: { messages: messageId },
+      },
+    );
   }
 }

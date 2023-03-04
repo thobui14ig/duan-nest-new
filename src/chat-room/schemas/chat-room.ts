@@ -25,6 +25,19 @@ export class ChatRoom {
     default: undefined,
   })
   users: User[];
+
+  @Prop({
+    type: String,
+    required: true,
+    default: 'user',
+  })
+  type: string;
+
+  @Prop({
+    type: String,
+    default: undefined,
+  })
+  name: string;
 }
 
 export const ChatRoomSchema = SchemaFactory.createForClass(ChatRoom);
