@@ -45,6 +45,9 @@ export class Tasks {
     ref: 'Attachments',
   })
   attachments: string;
+
+  @Prop({ type: Boolean, default: false })
+  success: boolean;
 }
 
 export const TasksSchema = SchemaFactory.createForClass(Tasks);

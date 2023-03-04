@@ -83,4 +83,9 @@ export class ChatRoomController {
   removeMessage(@Param('id') id: string, @Param('roomId') roomId: string) {
     return this.chatRoomService.removeMessage(id, roomId);
   }
+
+  @Get('/get-users/:id')
+  getUsers(@Param('id') roomId: string) {
+    return this.chatRoomService.getListUsers(roomId);
+  }
 }

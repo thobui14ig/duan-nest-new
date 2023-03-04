@@ -1,3 +1,4 @@
+import { UserDocument } from './../users/schemas/users.schema';
 import { CreateChatGroupDto } from './dto/create-group-room';
 import { UsersService } from './../users/users.service';
 import { MessageDto } from './dto/message-chat-room.dto';
@@ -18,6 +19,7 @@ export class ChatRoomService {
     @InjectModel(Messages.name)
     private readonly messageModel: Model<MessagesDocument>,
     private userService: UsersService,
+    @InjectModel('User') private userModel: Model<UserDocument>,
   ) {}
 
   create(createChatRoomDto: CreateChatRoomDto) {
@@ -139,5 +141,19 @@ export class ChatRoomService {
         $pull: { messages: messageId },
       },
     );
+  }
+
+  getListUsers(roomId: string) {
+    return this.chatRoomModel
+      .findOne({
+        _id: new ObjectId(roomId),
+      })
+      .populate({
+        path: 'users',
+        select: 'name email _id',
+        // select: 'name email -_id',
+        model: this.userModel,
+      })
+      .select('users name');
   }
 }

@@ -54,7 +54,6 @@ export class TasksService {
     file: Express.Multer.File,
     userCreate: string,
   ) {
-    console.log(11, file);
     const acttachment = await this.attachmentModel.create({
       name: file.filename,
       createdBy: userCreate,
@@ -63,7 +62,7 @@ export class TasksService {
 
     return this.taskModel.updateOne(
       { _id: taskId },
-      { $push: { attachments: acttachment._id } },
+      { $push: { attachments: acttachment._id }, $set: { isUpload: true } },
     );
   }
 
