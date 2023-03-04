@@ -34,7 +34,6 @@ export class AppGateway
     if (user) {
       this.addUser({ id: user._id, socketId: client.id });
     }
-    console.log(111, this.listUser);
   }
 
   @SubscribeMessage('sendMessage')
@@ -43,19 +42,24 @@ export class AppGateway
     payload: {
       senderId: string;
       text: string;
-      receiveId: string;
+      receiveIds: string;
       roomId: string;
+      messageId: string;
     },
   ) {
-    const { senderId, receiveId, text: content, roomId } = payload;
-    const userReceive = this.getUser(receiveId);
+    const { senderId, receiveIds, text: content, roomId, messageId } = payload;
     const emit = this.server;
-    if (userReceive) {
-      emit.to(userReceive.socketId).emit('sendDataServer', {
-        senderId,
-        content,
-        roomId,
-      });
+    for (const receiveId of receiveIds) {
+      const userReceive = this.getUser(receiveId);
+
+      if (userReceive) {
+        emit.to(userReceive.socketId).emit('sendDataServer', {
+          senderId,
+          content,
+          roomId,
+          messageId,
+        });
+      }
     }
   }
 

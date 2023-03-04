@@ -1,14 +1,15 @@
+import { CreateChatGroupDto } from './dto/create-group-room';
 import { AuthGuard } from './../auth/guard/auth.guard';
 import {
   Controller,
   Get,
-  Post,
   Body,
   Patch,
   Param,
   Delete,
   UseGuards,
   Req,
+  Post,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ChatRoomService } from './chat-room.service';
@@ -26,6 +27,11 @@ export class ChatRoomController {
     const { id: currentUserId } = req.user;
     const { userId } = params;
     return this.chatRoomService.createRoom(userId, currentUserId);
+  }
+
+  @Get('/get-room/:roomId')
+  getRoom(@Param('roomId') roomId: string) {
+    return this.chatRoomService.getRoom(roomId);
   }
 
   @Post('/send-message')
@@ -59,5 +65,22 @@ export class ChatRoomController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.chatRoomService.remove(+id);
+  }
+
+  @Post('/create-group')
+  createGroup(@Body() body: CreateChatGroupDto, @Req() req: any) {
+    const { id: currentUserId } = req.user;
+    body = {
+      ...body,
+      users: [...body.users, currentUserId],
+      createBy: currentUserId,
+    };
+
+    return this.chatRoomService.createGroup(body);
+  }
+
+  @Delete('remove-message/:id/:roomId')
+  removeMessage(@Param('id') id: string, @Param('roomId') roomId: string) {
+    return this.chatRoomService.removeMessage(id, roomId);
   }
 }
