@@ -63,6 +63,54 @@ export class AppGateway
     }
   }
 
+  @SubscribeMessage('removeMessage')
+  handleRemovmessageseMessage(
+    client: Socket,
+    payload: {
+      receiveIds: string;
+      roomId: string;
+      messageId: string;
+    },
+  ) {
+    const { receiveIds, roomId, messageId } = payload;
+    const emit = this.server;
+
+    for (const receiveId of receiveIds) {
+      const userReceive = this.getUser(receiveId);
+
+      if (userReceive) {
+        emit.to(userReceive.socketId).emit('sendDataServerRemoveMessage', {
+          roomId,
+          messageId,
+        });
+      }
+    }
+  }
+
+  @SubscribeMessage('reloadListMessage')
+  handleReloadListMessage(
+    client: Socket,
+    payload: {
+      receiveIds: string[];
+      roomId: string;
+    },
+  ) {
+    const { receiveIds, roomId } = payload;
+    const emit = this.server;
+    console.log(111, payload);
+
+    // for (const receiveId of receiveIds) {
+    //   const userReceive = this.getUser(receiveId);
+
+    //   if (userReceive) {
+    //     emit.to(userReceive.socketId).emit('sendDataServerRemoveMessage', {
+    //       roomId,
+    //       messageId,
+    //     });
+    //   }
+    // }
+  }
+
   handleDisconnect(client: Socket) {
     this.removeUser(client.id);
   }

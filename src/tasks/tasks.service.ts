@@ -95,7 +95,6 @@ export class TasksService {
 
   downloadFile(fileName: string, res: any) {
     const file = createReadStream(join(__dirname, '..', 'uploads', fileName));
-    console.log(333, file);
     res.setHeader('Content-Type', 'application/octet-stream');
     file.pipe(res);
   }

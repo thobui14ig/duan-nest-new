@@ -1,3 +1,4 @@
+import { ChatUser, ChatUserSchema } from './schemas/chat-user';
 import { User, UserSchema } from './../users/schemas/users.schema';
 import { UsersModule } from './../users/users.module';
 import { Messages, MessagesSchema } from './schemas/messages';
@@ -13,6 +14,7 @@ import { ChatRoom, ChatRoomSchema } from './schemas/chat-room';
       { name: ChatRoom.name, schema: ChatRoomSchema },
       { name: Messages.name, schema: MessagesSchema },
       { name: User.name, schema: UserSchema },
+      { name: ChatUser.name, schema: ChatUserSchema },
     ]),
     UsersModule,
   ],

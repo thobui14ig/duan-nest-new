@@ -9,4 +9,7 @@ export class CreateChatGroupDto {
 
   @ApiProperty({ type: String, description: 'listUsers' })
   createBy: string;
+
+  @ApiProperty({ type: String, description: 'listUsers' })
+  read: any;
 }

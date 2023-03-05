@@ -70,10 +70,17 @@ export class ChatRoomController {
   @Post('/create-group')
   createGroup(@Body() body: CreateChatGroupDto, @Req() req: any) {
     const { id: currentUserId } = req.user;
+    const users = [...body.users, currentUserId];
     body = {
       ...body,
-      users: [...body.users, currentUserId],
+      users,
       createBy: currentUserId,
+      read: users.map((item: any) => {
+        return {
+          user: item,
+          isRead: item === currentUserId ? true : false,
+        };
+      }),
     };
 
     return this.chatRoomService.createGroup(body);

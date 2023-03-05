@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import mongoose, { Model } from 'mongoose';
+import { exec } from 'child_process';
 const ObjectId = mongoose.Types.ObjectId;
 @Injectable()
 export class UsersService {
@@ -74,6 +75,20 @@ export class UsersService {
             'listChats.updatedAt': 1,
           },
         },
+        { $unwind: '$listChats' },
+        { $sort: { 'listChats.updatedAt': -1 } },
+        {
+          $group: {
+            _id: '$_id',
+            listChats: { $push: '$listChats' },
+          },
+        },
+        // {
+        //   $project: {
+        //     _id: 1,
+        //     listChats: 1,
+        //   },
+        // },
       ])
       .exec();
 

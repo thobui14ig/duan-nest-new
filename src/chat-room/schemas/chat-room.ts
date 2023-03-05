@@ -38,6 +38,22 @@ export class ChatRoom {
     default: undefined,
   })
   name: string;
+
+  @Prop({
+    type: [
+      {
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: true,
+          ref: 'user',
+        },
+        isRead: { type: Boolean, default: false },
+      },
+    ],
+    required: true,
+    default: [],
+  })
+  read: { user: string; isRead: boolean }[];
 }
 
 export const ChatRoomSchema = SchemaFactory.createForClass(ChatRoom);
