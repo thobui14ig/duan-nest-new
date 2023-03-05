@@ -13,6 +13,9 @@ export class Attachment {
   @Prop({ type: String, default: undefined })
   name: string;
 
+  @Prop({ type: String, default: undefined })
+  path: string;
+
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     required: true,

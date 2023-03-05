@@ -68,6 +68,15 @@ export class TasksController {
 
   @Get('/attachment/:fileName')
   downloadFile(@Param('fileName') fileName: string, @Res() res: any) {
-    return this.tasksService.downloadFile(fileName, res);
+    try {
+      return this.tasksService.downloadFile(fileName, res);
+    } catch (err) {
+      throw new Error('File không tồn tại');
+    }
+  }
+
+  @Delete('remove-file/:fileId/:taskId')
+  removeFile(@Param('fileId') fileId: string, @Param('taskId') taskId: string) {
+    return this.tasksService.removeFile(fileId, taskId);
   }
 }

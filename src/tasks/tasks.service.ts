@@ -55,9 +55,10 @@ export class TasksService {
     userCreate: string,
   ) {
     const acttachment = await this.attachmentModel.create({
-      name: file.filename,
+      name: file.originalname,
       createdBy: userCreate,
       task: taskId,
+      path: file.filename,
     });
 
     return this.taskModel.updateOne(
@@ -81,6 +82,7 @@ export class TasksService {
         {
           $project: {
             _id: 1,
+            'attachments.path': 1,
             'attachments.name': 1,
             'attachments._id': 1,
           },
@@ -93,7 +95,32 @@ export class TasksService {
 
   downloadFile(fileName: string, res: any) {
     const file = createReadStream(join(__dirname, '..', 'uploads', fileName));
+    console.log(333, file);
     res.setHeader('Content-Type', 'application/octet-stream');
     file.pipe(res);
+  }
+
+  async removeFile(fileId: string, taskId: string) {
+    await this.attachmentModel.deleteOne({
+      _id: new ObjectId(fileId),
+    });
+
+    await this.taskModel.findOneAndUpdate(
+      { _id: new ObjectId(taskId) },
+      {
+        $pull: { attachments: fileId },
+      },
+    );
+
+    const checkFile = await this.taskModel.findOne({
+      _id: new ObjectId(taskId),
+    });
+
+    if (checkFile.attachments.length <= 0) {
+      return this.taskModel.updateOne(
+        { _id: taskId },
+        { $set: { isUpload: false } },
+      );
+    }
   }
 }
