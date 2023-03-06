@@ -95,4 +95,10 @@ export class ChatRoomController {
   getUsers(@Param('id') roomId: string) {
     return this.chatRoomService.getListUsers(roomId);
   }
+
+  @Patch('/set-is-read/:id')
+  setIsReadTrue(@Param('id') roomId: string, @Req() req: any) {
+    const { id: userId } = req.user;
+    return this.chatRoomService.setIsReadTrue(roomId, userId);
+  }
 }

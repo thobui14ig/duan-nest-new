@@ -67,6 +67,25 @@ export class ChatRoomService {
         { $push: { messages: messageReturn._id } },
       );
 
+      const room = await this.chatRoomModel.findOne({
+        _id: new ObjectId(roomId),
+      });
+
+      for (const user of room.users) {
+        const checkUser = room.read.find(
+          (item) => item.user.toString() === user.toString(),
+        );
+
+        //nếu là người tạo thì isRead bằng true
+        const isRead = userId === user.toString() ? true : false;
+        if (!checkUser) {
+          room.read.push({ user: user.toString(), isRead });
+        } else {
+          checkUser.isRead = isRead;
+        }
+        await room.save();
+      }
+
       return messageReturn;
     }
   }
@@ -155,5 +174,19 @@ export class ChatRoomService {
         model: this.userModel,
       })
       .select('users name');
+  }
+
+  async setIsReadTrue(roomId: string, userId: string) {
+    const room = await this.chatRoomModel.findOne({
+      _id: new ObjectId(roomId),
+    });
+
+    const user = room?.read.find((item) => item.user.toString() === userId);
+    if (!user) {
+      room.read.push({ user: userId, isRead: true });
+    } else {
+      user.isRead = true;
+    }
+    await room.save();
   }
 }

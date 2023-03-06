@@ -69,6 +69,7 @@ export class UsersService {
             _id: 1,
             'listChats._id': 1,
             'listChats.users': 1,
+            'listChats.read': 1,
             'listChats.name': 1,
             'listChats.type': 1,
             'listChats.createdAt': 1,
