@@ -13,25 +13,22 @@ export class ChatUser {
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
     required: true,
-    ref: 'Users',
+    ref: 'chats',
   })
-  user: string;
+  roomId: string;
 
   @Prop({
-    type: [
-      {
-        roomId: {
-          type: mongoose.Schema.Types.ObjectId,
-          required: true,
-          ref: 'chats',
-        },
-        isRead: { type: Boolean, default: false },
-      },
-    ],
+    type: mongoose.Schema.Types.ObjectId,
     required: true,
-    default: [],
+    ref: 'users',
   })
-  rooms: { roomId: string; isRead: boolean }[];
+  userId: string;
+
+  @Prop({
+    type: Boolean,
+    required: true,
+  })
+  isRead: boolean;
 }
 
 export const ChatUserSchema = SchemaFactory.createForClass(ChatUser);

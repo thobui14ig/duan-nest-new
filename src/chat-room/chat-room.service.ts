@@ -1,3 +1,4 @@
+import { ChatUser, ChatUserDocument } from './schemas/chat-user';
 import { UserDocument } from './../users/schemas/users.schema';
 import { CreateChatGroupDto } from './dto/create-group-room';
 import { UsersService } from './../users/users.service';
@@ -20,6 +21,8 @@ export class ChatRoomService {
     private readonly messageModel: Model<MessagesDocument>,
     private userService: UsersService,
     @InjectModel('User') private userModel: Model<UserDocument>,
+    @InjectModel(ChatUser.name)
+    private readonly chatUserModel: Model<ChatUserDocument>,
   ) {}
 
   create(createChatRoomDto: CreateChatRoomDto) {
@@ -72,18 +75,29 @@ export class ChatRoomService {
       });
 
       for (const user of room.users) {
-        const checkUser = room.read.find(
-          (item) => item.user.toString() === user.toString(),
-        );
-
-        //nếu là người tạo thì isRead bằng true
-        const isRead = userId === user.toString() ? true : false;
+        const checkUser = await this.chatUserModel.findOne({
+          roomId: new ObjectId(roomId),
+          userId: new ObjectId(userId),
+        });
+        // //nếu là người tạo thì isRead bằng true
+        const isRead = userId.toString() === user.toString() ? true : false;
         if (!checkUser) {
-          room.read.push({ user: user.toString(), isRead });
+          await this.chatUserModel.create({
+            roomId,
+            userId: user,
+            isRead,
+          });
         } else {
-          checkUser.isRead = isRead;
+          await this.chatUserModel.updateOne(
+            {
+              roomId: new ObjectId(roomId),
+              userId: user,
+            },
+            {
+              $set: { isRead: isRead },
+            },
+          );
         }
-        await room.save();
       }
 
       return messageReturn;

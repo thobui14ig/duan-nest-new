@@ -74,9 +74,41 @@ export class UsersService {
             'listChats.type': 1,
             'listChats.createdAt': 1,
             'listChats.updatedAt': 1,
+            'listChats.chatUser.isRead': 1,
           },
         },
         { $unwind: '$listChats' },
+        {
+          $lookup: {
+            from: 'chatuser',
+            let: { roomId: '$listChats._id', userId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$roomId', '$$roomId'] },
+                      { $eq: ['$userId', '$$userId'] },
+                    ],
+                  },
+                },
+              },
+              {
+                $project: {
+                  _id: 0,
+                  isRead: 1, // Include only the isRead field from chatuser
+                },
+              },
+            ],
+            as: 'chatUser',
+          },
+        },
+        {
+          $addFields: {
+            'listChats.chatUser': { $arrayElemAt: ['$chatUser', 0] },
+          },
+        },
+
         { $sort: { 'listChats.updatedAt': -1 } },
         {
           $group: {
@@ -84,12 +116,6 @@ export class UsersService {
             listChats: { $push: '$listChats' },
           },
         },
-        // {
-        //   $project: {
-        //     _id: 1,
-        //     listChats: 1,
-        //   },
-        // },
       ])
       .exec();
 

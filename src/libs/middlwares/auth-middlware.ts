@@ -7,7 +7,6 @@ export class AuthMiddleware implements NestMiddleware {
   constructor(private jwtService: JwtService) {}
   use(req: Request, res: Response, next: NextFunction) {
     // Retrieve the user token from wherever it is stored (e.g., session, cookie, header)
-    console.log(req.headers);
     const userToken = req.headers.authorization;
     if (userToken) {
       const decoded = this.jwtService.verify(userToken as string);
