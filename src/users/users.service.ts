@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import mongoose, { Model } from 'mongoose';
-import { exec } from 'child_process';
 const ObjectId = mongoose.Types.ObjectId;
 @Injectable()
 export class UsersService {
@@ -69,7 +68,6 @@ export class UsersService {
             _id: 1,
             'listChats._id': 1,
             'listChats.users': 1,
-            'listChats.read': 1,
             'listChats.name': 1,
             'listChats.type': 1,
             'listChats.createdAt': 1,
@@ -120,5 +118,14 @@ export class UsersService {
       .exec();
 
     return listChats;
+  }
+
+  deleteRoomInUser(roomId: string, userId: string) {
+    return this.userModel.findOneAndUpdate(
+      { _id: new ObjectId(userId) },
+      {
+        $pull: { listChats: roomId },
+      },
+    );
   }
 }

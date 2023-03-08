@@ -62,9 +62,9 @@ export class ChatRoomController {
     return this.chatRoomService.update(+id, updateChatRoomDto);
   }
 
-  @Delete(':id')
+  @Delete('remove-group/:id')
   remove(@Param('id') id: string) {
-    return this.chatRoomService.remove(+id);
+    return this.chatRoomService.remove(id);
   }
 
   @Post('/create-group')
@@ -100,5 +100,10 @@ export class ChatRoomController {
   setIsReadTrue(@Param('id') roomId: string, @Req() req: any) {
     const { id: userId } = req.user;
     return this.chatRoomService.setIsReadTrue(roomId, userId);
+  }
+
+  @Post('/edit-group/:roomId')
+  editGroup(@Param('roomId') roomId: string, @Body() body) {
+    return this.chatRoomService.editGroup(roomId, body);
   }
 }

@@ -152,8 +152,15 @@ export class ChatRoomService {
     return updateChatRoomDto;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} chatRoom`;
+  async remove(roomId: string) {
+    const room = await this.chatRoomModel.findOne({
+      _id: new ObjectId(roomId),
+    });
+    for (const user of room.users) {
+      await this.userService.deleteRoomInUser(roomId, user.toString());
+    }
+
+    return this.chatRoomModel.deleteOne({ _id: new ObjectId(roomId) });
   }
 
   async createGroup(body: CreateChatGroupDto) {
@@ -191,16 +198,50 @@ export class ChatRoomService {
   }
 
   async setIsReadTrue(roomId: string, userId: string) {
+    const checkUser = await this.chatUserModel.findOne({
+      roomId: new ObjectId(roomId),
+      userId: new ObjectId(userId),
+    });
+
+    if (!checkUser) {
+      await this.chatUserModel.create({
+        roomId,
+        userId: userId,
+        isRead: true,
+      });
+    } else {
+      await this.chatUserModel.updateOne(
+        {
+          roomId: new ObjectId(roomId),
+          userId: new ObjectId(userId),
+        },
+        {
+          $set: { isRead: true },
+        },
+      );
+    }
+  }
+
+  async editGroup(roomId: string, body: any) {
+    const { title, listUsersGroup, listUsersGroupDelete } = body;
+    //xoa danh sach chat trong user
+    for (const user of listUsersGroupDelete) {
+      await this.userService.deleteRoomInUser(roomId, user);
+    }
+
     const room = await this.chatRoomModel.findOne({
       _id: new ObjectId(roomId),
     });
-
-    const user = room?.read.find((item) => item.user.toString() === userId);
-    if (!user) {
-      room.read.push({ user: userId, isRead: true });
-    } else {
-      user.isRead = true;
+    //them user moi
+    const newUser = listUsersGroup.filter((elem) => !room.users.includes(elem));
+    for (const user of newUser) {
+      await this.userService.updateListChatRooms(user, roomId);
     }
-    await room.save();
+
+    console.log(111, body);
+
+    room.users = listUsersGroup;
+    room.name = title;
+    return room.save();
   }
 }
