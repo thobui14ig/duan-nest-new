@@ -61,6 +61,16 @@ export class TasksController {
     return this.tasksService.insertFileReport(taskId, file, userCreate);
   }
 
+  @Post('upload-file-room/:id/:userCreate')
+  @UseInterceptors(FileInterceptor('file'))
+  uploadFileRoom(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id') roomId: string,
+    @Param('userCreate') userCreate: any,
+  ) {
+    return this.tasksService.insertFileRoom(roomId, file, userCreate);
+  }
+
   @Get('get-attachments/:taskId')
   getAttachment(@Param('taskId') taskId: string) {
     return this.tasksService.getAttachments(taskId);

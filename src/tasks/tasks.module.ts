@@ -1,3 +1,4 @@
+import { ChatRoom, ChatRoomSchema } from './../chat-room/schemas/chat-room';
 import { Attachment, AttachmentSchema } from './schemas/attachment';
 import { extname } from 'path';
 import { Module } from '@nestjs/common';
@@ -10,7 +11,7 @@ import { MulterModule, MulterModuleOptions } from '@nestjs/platform-express';
 
 const multerOptions: MulterModuleOptions = {
   storage: multer.diskStorage({
-    destination: './dist/uploads',
+    destination: './../uploads',
     filename: (req, file, cb) => {
       const randomName = Array(32)
         .fill(null)
@@ -27,6 +28,7 @@ const multerOptions: MulterModuleOptions = {
     MongooseModule.forFeature([
       { name: Tasks.name, schema: TasksSchema },
       { name: Attachment.name, schema: AttachmentSchema },
+      { name: ChatRoom.name, schema: ChatRoomSchema },
     ]),
   ],
   controllers: [TasksController],

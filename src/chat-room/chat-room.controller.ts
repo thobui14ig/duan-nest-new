@@ -106,4 +106,9 @@ export class ChatRoomController {
   editGroup(@Param('roomId') roomId: string, @Body() body) {
     return this.chatRoomService.editGroup(roomId, body);
   }
+
+  @Get('get-attachments/:roomId')
+  getAttachment(@Param('roomId') roomId: string) {
+    return this.chatRoomService.getAttachments(roomId);
+  }
 }

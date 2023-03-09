@@ -25,10 +25,15 @@ export class Attachment {
 
   @Prop({
     type: mongoose.Schema.Types.ObjectId,
-    required: true,
     ref: 'Tasks',
   })
   task: string;
+
+  @Prop({
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'chats',
+  })
+  room: string;
 }
 
 export const AttachmentSchema = SchemaFactory.createForClass(Attachment);

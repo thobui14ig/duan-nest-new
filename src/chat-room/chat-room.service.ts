@@ -238,10 +238,34 @@ export class ChatRoomService {
       await this.userService.updateListChatRooms(user, roomId);
     }
 
-    console.log(111, body);
-
     room.users = listUsersGroup;
     room.name = title;
     return room.save();
+  }
+
+  async getAttachments(roomId: string) {
+    const [listAttachments] = await this.chatRoomModel
+      .aggregate([
+        {
+          $lookup: {
+            from: 'attachments',
+            localField: 'attachments',
+            foreignField: '_id',
+            as: 'attachments',
+          },
+        },
+        { $match: { _id: new ObjectId(roomId) } },
+        {
+          $project: {
+            _id: 1,
+            'attachments.path': 1,
+            'attachments.name': 1,
+            'attachments._id': 1,
+          },
+        },
+      ])
+      .exec();
+
+    return listAttachments;
   }
 }

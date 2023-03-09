@@ -1,3 +1,4 @@
+import { ChatRoom, ChatRoomDocument } from './../chat-room/schemas/chat-room';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { createReadStream } from 'fs';
@@ -15,6 +16,8 @@ export class TasksService {
     private readonly taskModel: Model<TasksDocument>,
     @InjectModel(Attachment.name)
     private readonly attachmentModel: Model<AttachmentDocument>,
+    @InjectModel(ChatRoom.name)
+    private readonly chatRoomModel: Model<ChatRoomDocument>,
   ) {}
 
   async create(createTaskDto: CreateTaskDto, userId: string) {
@@ -66,6 +69,23 @@ export class TasksService {
       { $push: { attachments: acttachment._id }, $set: { isUpload: true } },
     );
   }
+  async insertFileRoom(
+    roomId: string,
+    file: Express.Multer.File,
+    userCreate: string,
+  ) {
+    const acttachment = await this.attachmentModel.create({
+      name: file.originalname,
+      createdBy: userCreate,
+      room: roomId,
+      path: file.filename,
+    });
+
+    return this.chatRoomModel.updateOne(
+      { _id: roomId },
+      { $push: { attachments: acttachment._id } },
+    );
+  }
 
   async getAttachments(taskId: string) {
     const [listAttachments] = await this.taskModel
@@ -94,7 +114,9 @@ export class TasksService {
   }
 
   downloadFile(fileName: string, res: any) {
-    const file = createReadStream(join(__dirname, '..', 'uploads', fileName));
+    const file = createReadStream(
+      join(__dirname, '../../../', 'uploads', fileName),
+    );
     res.setHeader('Content-Type', 'application/octet-stream');
     file.pipe(res);
   }

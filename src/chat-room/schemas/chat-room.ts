@@ -1,3 +1,4 @@
+import { Attachment } from './../../tasks/schemas/attachment';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from './../../users/schemas/users.schema';
@@ -38,6 +39,13 @@ export class ChatRoom {
     default: undefined,
   })
   name: string;
+
+  @Prop({
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: 'attachments',
+    default: undefined,
+  })
+  attachments: Attachment[];
 
   @Prop({
     type: [
