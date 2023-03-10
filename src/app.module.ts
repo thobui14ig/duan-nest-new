@@ -11,6 +11,7 @@ import { GatewayModules } from './gatewaies/gateway.modules';
 import { AuthMiddleware } from './libs/middlwares/auth-middlware';
 import { TasksModule } from './tasks/tasks.module';
 import { UsersModule } from './users/users.module';
+import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { UsersModule } from './users/users.module';
     GatewayModules,
     ChatRoomModule,
     TasksModule,
+    RoleModule,
   ],
   controllers: [AppController],
   providers: [AppService],
