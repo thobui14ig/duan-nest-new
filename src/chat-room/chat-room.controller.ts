@@ -1,19 +1,17 @@
-import { CreateChatGroupDto } from './dto/create-group-room';
-import { AuthGuard } from './../auth/guard/auth.guard';
 import {
-  Controller,
-  Get,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  UseGuards,
-  Req,
+  Get,
+  Param,
+  Patch,
   Post,
+  Req,
 } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { ChatRoomService } from './chat-room.service';
 import { CreateChatRoomDto } from './dto/create-chat-room.dto';
+import { CreateChatGroupDto } from './dto/create-group-room';
 import { MessageDto } from './dto/message-chat-room.dto';
 import { UpdateChatRoomDto } from './dto/update-chat-room.dto';
 
@@ -110,5 +108,10 @@ export class ChatRoomController {
   @Get('get-attachments/:roomId')
   getAttachment(@Param('roomId') roomId: string) {
     return this.chatRoomService.getAttachments(roomId);
+  }
+
+  @Delete('remove-file/:fileId/:roomId')
+  removeFile(@Param('fileId') fileId: string, @Param('roomId') roomId: string) {
+    return this.chatRoomService.removeFile(fileId, roomId);
   }
 }
