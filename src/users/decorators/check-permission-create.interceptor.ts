@@ -1,6 +1,8 @@
 import {
   CallHandler,
   ExecutionContext,
+  HttpException,
+  HttpStatus,
   Injectable,
   NestInterceptor,
 } from '@nestjs/common';
@@ -18,7 +20,10 @@ export class CUserInterceptor implements NestInterceptor {
 
     if (Number(user.role) === 3) {
       if (!roles.cUser) {
-        throw new Error('Interceptor error');
+        throw new HttpException(
+          'Bạn không có quyền tạo user',
+          HttpStatus.FORBIDDEN,
+        );
       }
     }
 

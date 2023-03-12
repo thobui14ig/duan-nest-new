@@ -1,3 +1,4 @@
+import { Attachment, AttachmentDocument } from './../tasks/schemas/attachment';
 import { ChatUser, ChatUserDocument } from './schemas/chat-user';
 import { UserDocument } from './../users/schemas/users.schema';
 import { CreateChatGroupDto } from './dto/create-group-room';
@@ -23,6 +24,9 @@ export class ChatRoomService {
     @InjectModel('User') private userModel: Model<UserDocument>,
     @InjectModel(ChatUser.name)
     private readonly chatUserModel: Model<ChatUserDocument>,
+
+    @InjectModel(Attachment.name)
+    private readonly attachmentModel: Model<AttachmentDocument>,
   ) {}
 
   create(createChatRoomDto: CreateChatRoomDto) {
@@ -267,5 +271,18 @@ export class ChatRoomService {
       .exec();
 
     return listAttachments;
+  }
+
+  async removeFile(fileId: string, roomId: string) {
+    await this.attachmentModel.deleteOne({
+      _id: new ObjectId(fileId),
+    });
+
+    await this.chatRoomModel.findOneAndUpdate(
+      { _id: new ObjectId(roomId) },
+      {
+        $pull: { attachments: fileId },
+      },
+    );
   }
 }
