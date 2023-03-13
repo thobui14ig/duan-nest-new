@@ -27,6 +27,10 @@ export class UsersService {
     return this.userModel.findOne(dto);
   }
 
+  findByEmail(email: string) {
+    return this.userModel.findOne({ email });
+  }
+
   findByName(name: string) {
     return this.userModel.findOne({ name });
   }

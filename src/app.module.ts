@@ -1,3 +1,4 @@
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -12,6 +13,7 @@ import { AuthMiddleware } from './libs/middlwares/auth-middlware';
 import { TasksModule } from './tasks/tasks.module';
 import { UsersModule } from './users/users.module';
 import { RoleModule } from './role/role.module';
+import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 
 @Module({
   imports: [
@@ -32,6 +34,34 @@ import { RoleModule } from './role/role.module';
 
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
+    }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: async (config: ConfigService) => {
+        console.log(config.get('HOST'));
+        return {
+          // transport: config.get('MAIL_TRANSPORT'),
+          transport: {
+            host: 'smtp.gmail.com',
+            secure: false,
+            auth: {
+              user: 'buithanhtho15ig@gmail.com',
+              pass: 'vwvsvfdvwwvekovv',
+            },
+          },
+          defaults: {
+            from: `"No Reply" <${config.get('MAIL_FROM')}>`,
+          },
+          template: {
+            dir: join(__dirname, 'src/templates/email'),
+            adapter: new HandlebarsAdapter(),
+            options: {
+              strict: true,
+            },
+          },
+        };
+      },
+      inject: [ConfigService],
     }),
 
     UsersModule,

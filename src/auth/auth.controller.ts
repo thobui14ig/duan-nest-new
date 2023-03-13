@@ -12,4 +12,9 @@ export class AuthController {
   create(@Body() loginAuthDto: AuthLoginDto) {
     return this.authService.login(loginAuthDto);
   }
+
+  @Post('reset-password')
+  resetPassword(@Body('email') email: string) {
+    return this.authService.resetPassword(email);
+  }
 }
