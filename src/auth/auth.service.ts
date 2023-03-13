@@ -37,12 +37,10 @@ export class AuthService {
   }
 
   async resetPassword(email: string) {
-    const user = await this.userService.findByEmail(
-      'buithanhtho14ig@gmail.com',
-    );
+    const user = await this.userService.findByEmail(email);
     const randomString = Math.random().toString(36).substring(2, 8);
-    user.password = randomString
-    await user.save()
+    user.password = randomString;
+    await user.save();
 
     return this.mailServer.sendMail({
       to: user?.email,
