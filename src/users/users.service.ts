@@ -1,18 +1,49 @@
 import { User, UserDocument } from './schemas/users.schema';
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import mongoose, { Model } from 'mongoose';
+import { MailerService } from '@nest-modules/mailer';
+import { HttpException } from '@nestjs/common/exceptions';
 const ObjectId = mongoose.Types.ObjectId;
 @Injectable()
 export class UsersService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<UserDocument>,
+    private mailServer: MailerService,
   ) {}
 
-  create(createUserDto: CreateUserDto, userId: string) {
-    return this.userModel.create({ ...createUserDto, createdBy: userId });
+  async create(createUserDto: any, userId: string) {
+    const checkEmail = await this.findByEmail(createUserDto?.email);
+    if (checkEmail) {
+      throw new HttpException('Email đã tồn tại', HttpStatus.FORBIDDEN);
+    }
+
+    const checkName = await this.findByName(createUserDto?.name);
+    if (checkName) {
+      throw new HttpException(
+        'Tên đăng nhập đã tồn tại!',
+        HttpStatus.FORBIDDEN,
+      );
+    }
+
+    const user = await this.userModel.create({
+      ...createUserDto,
+      createdBy: userId,
+    });
+
+    this.mailServer.sendMail({
+      to: createUserDto?.email,
+      subject: `Tài khoản mới`,
+      template: './newuser',
+      context: {
+        username: createUserDto.name,
+        password: createUserDto.password,
+      },
+    });
+
+    return user;
   }
 
   findAll() {
